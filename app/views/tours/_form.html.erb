@@ -1,0 +1,87 @@
+<div class="container-fluid mt--6">
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-header border-0">
+          <h3 class="mb-0">Tours New</h3>
+          <%= form_with(model: @tour, local: true) do |form| %>
+          <% if @tour.errors.any? %>
+          <div id="error_explanation">
+            <h2><%= pluralize(@tour.errors.count, "error") %> prohibited this Tour from being saved:</h2>
+
+            <ul>
+              <% @tour.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+          <% end %>
+          <div class="form-group">
+            <%= form.label :start_datetime %>
+            <%= form.text_field :start_datetime, id: "datepicker", class: "form-control date-value datetimepicker", autocomplete:'off' %>
+          </div>
+
+          <% if tour_types.present? %>
+            <div class="form-group tour-types" id= 'tour-t'>
+              <%= form.label :tour_type %>
+              <%= form.select :tour_type, tour_types, class: "form-control" %>
+            </div>
+          <% end %>
+
+          <div class="form-group">
+            <%= form.label :end_datetime %>
+            <%= form.text_field :end_datetime, class: "form-control datetimepicker", autocomplete:'off' %>
+          </div>
+
+
+          <div class="form-group">
+            <%= form.label :recurrence %>
+            <%= form.select :recurring, ['Never', 'Fill Occurence date', 'No. of occurences'], class: "form-control" %>
+          </div>
+
+          <div class="form-group d-none" id= 'recurring'>
+            <%= form.label :recurring_date %>
+            <%= form.text_field :recurring_date, class: "form-control datetimepicker", autocomplete:'off' %>
+          </div>
+
+          <div class="form-group d-none" id= 'recurring-times'>
+            <%= form.label :recurring_times %>
+            <%= form.number_field :recurring_times, class: "form-control", autocomplete:'off' %>
+          </div>
+
+          <div class="form-group">
+            <%= form.submit class: "btn btn-primary" %>
+          </div>
+        <% end %>
+        </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $('.datetimepicker').datetimepicker();
+
+  $('body').on('change', '.date-value', function(){
+    var date = $('#datepicker').val();
+    $.ajax({
+        url: "/get_tour_types",
+        type: "GET",
+        data: { start_date: date }
+    })
+  });
+
+  $('body').on('change', '#tour_recurring', function(){
+    var valu = $('#tour_recurring').val();
+    if (valu == 'Fill Occurence date'){
+      $('#recurring').removeClass('d-none');
+      $('#recurring-times').addClass('d-none');
+    }
+    else if(valu == 'No. of occurences') {
+      $('#recurring-times').removeClass('d-none');
+      $('#recurring').addClass('d-none');
+    }
+    else {
+      $('#recurring').addClass('d-none');
+    }
+  });
+</script>

@@ -1,0 +1,4 @@
+$("#tour_tour_type").empty();
+<% @tour_types.each do |tour_type| %>
+  $("<option></option>").attr("value", "<%= tour_type %>").text("<%= tour_type %>").appendTo('#tour_tour_type');
+<% end %>
